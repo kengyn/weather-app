@@ -13,19 +13,27 @@ const celBtn = document.querySelector(".celcius");
 const farBtn = document.querySelector(".fahrenheit");
 
 async function domController(city, unit = "imperial") {
-  const cityData = await getWeather(city, unit);
-  getTemp(cityData, unit);
-  getLocation(cityData);
-  getImg(cityData);
-  weatherBox.classList.remove("hidden");
+  try {
+    const cityData = await getWeather(city, unit);
+    getTemp(cityData, unit);
+    getLocation(cityData);
+    getImg(cityData);
+    weatherBox.classList.remove("hidden");
+  } catch (error) {
+    console.log("check spelling \n" + error);
+  }
 }
 
 async function getWeather(city, unit) {
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?q=${city.trim()}&appid=b29b3900687368d4dc487da1af69995f&units=${unit}`
-  );
-  const searchData = await response.json();
-  return searchData;
+  try {
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${city.trim()}&appid=b29b3900687368d4dc487da1af69995f&units=${unit}`
+    );
+    const searchData = await response.json();
+    return searchData;
+  } catch (error) {
+    console.log("ruh roh" + error);
+  }
 }
 
 function getImg(data) {
