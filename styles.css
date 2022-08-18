@@ -55,11 +55,16 @@ input,
   height: 30px;
 }
 
+.hidden {
+  transform: scale(0);
+}
+
 .weather-box {
   background-color: white;
   margin-top: 1rem;
   display: grid;
   grid-template-columns: repeat(2, minmax(100px, 300px));
+  box-shadow: 4px 4px 5px rgb(88, 84, 84);
 }
 
 .top-left {
@@ -97,6 +102,8 @@ img {
 }
 
 .change-unit {
+  background-color: gray;
+  color: white;
   font-size: 1rem;
   padding: 1rem;
   border-radius: 10%;
