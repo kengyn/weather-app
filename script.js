@@ -8,21 +8,23 @@ const high = document.querySelector(".high");
 const low = document.querySelector(".low");
 const input = document.querySelector("input");
 const search = document.querySelector(".search");
+const unitBtn = document.querySelector(".change-unit");
+const celBtn = document.querySelector(".celcius");
+const farBtn = document.querySelector(".fahrenheit");
 
-async function domController(city) {
-  const cityData = await getWeather(city);
-  getTemp(cityData);
+async function domController(city, unit = "imperial") {
+  const cityData = await getWeather(city, unit);
+  getTemp(cityData, unit);
   getLocation(cityData);
   getImg(cityData);
   weatherBox.classList.remove("hidden");
 }
 
-async function getWeather(city) {
+async function getWeather(city, unit) {
   const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=b29b3900687368d4dc487da1af69995f&units=imperial`
+    `https://api.openweathermap.org/data/2.5/weather?q=${city.trim()}&appid=b29b3900687368d4dc487da1af69995f&units=${unit}`
   );
   const searchData = await response.json();
-  console.log(searchData);
   return searchData;
 }
 
@@ -31,11 +33,21 @@ function getImg(data) {
   weatherDescription.textContent = data.weather[0].description;
 }
 
-function getTemp(data) {
-  temperature.textContent = data.main.temp;
-  feelsLike.textContent = data.main.feels_like;
-  high.textContent = data.main.temp_max;
-  low.textContent = data.main.temp_min;
+function getTemp(data, unit) {
+  let measurement;
+  if (unit === "imperial") {
+    measurement = "F";
+    farBtn.style.color = "black";
+    celBtn.style.color = "white";
+  } else {
+    measurement = "C";
+    farBtn.style.color = "white";
+    celBtn.style.color = "black";
+  }
+  temperature.textContent = data.main.temp + measurement;
+  feelsLike.textContent = data.main.feels_like + measurement;
+  high.textContent = data.main.temp_max + measurement;
+  low.textContent = data.main.temp_min + measurement;
 }
 
 function getLocation(data) {
@@ -46,7 +58,20 @@ search.onclick = () => domController(input.value);
 
 input.addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
-    console.log("e");
     domController(input.value);
   }
 });
+
+unitBtn.onclick = async () => {
+  let unit;
+  if (weatherBox.classList.contains("far")) {
+    unit = "metric";
+    weatherBox.classList.remove("far");
+    weatherBox.classList.add("cel");
+  } else {
+    unit = "imperial";
+    weatherBox.classList.remove("cel");
+    weatherBox.classList.add("far");
+  }
+  domController(input.value, unit);
+};
